@@ -101,6 +101,17 @@ static NSString * const kPatternIdentifyGroupIndex  = @"PatternGroupIndex";
 }
 
 - (BOOL)containsSimilarResourceName:(NSString *)name {
+    
+    if ([name hasPrefix:@"blackvip_level_"]) {
+        NSLog(@"export_name=%@,res=null",name);
+        return YES;
+    }
+    
+    if ([self containsSimilarResourceSpecialName:name]) {
+        return YES;
+    }
+    
+    
     NSString *regexStr = @"([-_]?\\d+)";
     NSRegularExpression* regexExpression = [NSRegularExpression regularExpressionWithPattern:regexStr options:NSRegularExpressionCaseInsensitive error:nil];
     NSArray* matchs = [regexExpression matchesInString:name options:0 range:NSMakeRange(0, name.length)];
@@ -128,17 +139,48 @@ static NSString * const kPatternIdentifyGroupIndex  = @"PatternGroupIndex";
         
         for (NSString *res in self.resStringSet) {
             if (hasSameSuffix && !hasSamePrefix) {
-                if ([res hasPrefix:prefix]) {
+                if ([res hasPrefix:prefix] && [res containsString:@"%"]) {
+                    NSLog(@"export_name=%@,res=%@",name,res);
                     return YES;
                 }
             }
             if (hasSamePrefix && !hasSameSuffix) {
-                if ([res hasSuffix:suffix]) {
+                if ([res hasSuffix:suffix] && [res containsString:@"%"]) {
+                    NSLog(@"export_name=%@,res=%@",name,res);
                     return YES;
                 }
             }
             if (!hasSamePrefix && !hasSameSuffix) {
-                if ([res hasPrefix:prefix] && [res hasSuffix:suffix]) {
+                if ([res hasPrefix:prefix] && [res hasSuffix:suffix] && [res containsString:@"%"]) {
+                    NSLog(@"export_name=%@,res=%@",name,res);
+                    return YES;
+                }
+            }
+        }
+    }
+    return NO;
+}
+
+
+- (BOOL)containsSimilarResourceSpecialName:(NSString *)name {
+    NSInteger length = name.length;
+    if (length > 4) {
+        
+        NSString *tempString = [name substringFromIndex:name.length - 4];
+        BOOL isHasNumber = NO;
+        for (int index = 0; index < tempString.length; index++) {
+            char a =  [tempString characterAtIndex:index];
+            if (a >= '0' && a <= '9') {
+                isHasNumber = YES;
+                break;
+            }
+        }
+        
+        if (isHasNumber) {
+            NSString *checkString = [name substringToIndex:name.length - 4];
+            for (NSString *res in self.resStringSet) {
+                if ([res containsString:checkString] && [res containsString:@"%"]) {
+                    NSLog(@"export_special_name=%@,res=%@",name,res);
                     return YES;
                 }
             }

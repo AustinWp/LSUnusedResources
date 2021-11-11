@@ -163,10 +163,15 @@ static NSString * const kPatternIdentifyGroupIndex  = @"PatternGroupIndex";
 
 
 - (BOOL)containsSimilarResourceSpecialName:(NSString *)name {
+    
+    if ([name containsString:@"-568h"]) {
+        return YES;
+    }
+    
     NSInteger length = name.length;
-    if (length > 4) {
+    if (length > 7) {
         
-        NSString *tempString = [name substringFromIndex:name.length - 4];
+        NSString *tempString = [name substringFromIndex:name.length - 7];
         BOOL isHasNumber = NO;
         for (int index = 0; index < tempString.length; index++) {
             char a =  [tempString characterAtIndex:index];
@@ -175,11 +180,20 @@ static NSString * const kPatternIdentifyGroupIndex  = @"PatternGroupIndex";
                 break;
             }
         }
+
         
-        if (isHasNumber) {
-            NSString *checkString = [name substringToIndex:name.length - 4];
+        if (isHasNumber || [name containsString:@"-ipx"]) {
+            NSString *checkString = [name substringToIndex:name.length - 7];
             for (NSString *res in self.resStringSet) {
+                
+                
+                
                 if ([res containsString:checkString] && [res containsString:@"%"]) {
+                    NSLog(@"export_special_name=%@,res=%@",name,res);
+                    return YES;
+                }
+                
+                if ([res containsString:checkString] && ([name containsString:@"-ipx"] || [name containsString:@"-ip6"])) {
                     NSLog(@"export_special_name=%@,res=%@",name,res);
                     return YES;
                 }

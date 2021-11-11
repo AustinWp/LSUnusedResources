@@ -412,6 +412,7 @@ static NSString * const kResultIdentifyFilePath    = @"FilePath";
                     //TODO: if imageset name is A but contains png with name B, and using as B, should ignore A.imageset
                     
                     ResourceFileInfo *resInfo = [ResourceFileSearcher sharedObject].resNameInfoDict[name];
+                    
                     if (!resInfo.isDir
                         || ![self usingResWithDiffrentDirName:resInfo]) {
                         [self.unusedResults addObject:resInfo];

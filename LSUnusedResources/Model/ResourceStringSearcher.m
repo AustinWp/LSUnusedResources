@@ -164,8 +164,9 @@ static NSString * const kPatternIdentifyGroupIndex  = @"PatternGroupIndex";
 
 - (BOOL)containsSimilarResourceSpecialName:(NSString *)name {
     
+    
     if ([name containsString:@"-568h"]) {
-        return YES;
+        return NO;
     }
     
     NSInteger length = name.length;
@@ -180,13 +181,13 @@ static NSString * const kPatternIdentifyGroupIndex  = @"PatternGroupIndex";
                 break;
             }
         }
+        
 
         
         if (isHasNumber || [name containsString:@"-ipx"]) {
+            
             NSString *checkString = [name substringToIndex:name.length - 7];
             for (NSString *res in self.resStringSet) {
-                
-                
                 
                 if ([res containsString:checkString] && [res containsString:@"%"]) {
                     NSLog(@"export_special_name=%@,res=%@",name,res);
@@ -199,6 +200,8 @@ static NSString * const kPatternIdentifyGroupIndex  = @"PatternGroupIndex";
                 }
             }
         }
+          
+
     }
     return NO;
 }
@@ -293,6 +296,8 @@ static NSString * const kPatternIdentifyGroupIndex  = @"PatternGroupIndex";
 }
 
 - (void)parseFileAtPath:(NSString *)path withResourcePattern:(ResourceStringPattern *)resourcePattern {
+    
+    
     NSString *content = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
     if (!content) {
         return;
